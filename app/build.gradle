@@ -29,6 +29,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:design:22.2.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile 'org.jetbrains.spek:spek:0.1.181'
 }
 buildscript {
     ext.kotlin_version = '1.0.0-beta-1103'
@@ -41,4 +42,7 @@ buildscript {
 }
 repositories {
     mavenCentral()
+    maven {
+        url "http://repository.jetbrains.com/all"
+    }
 }
