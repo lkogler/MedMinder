@@ -2,13 +2,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 22
+    compileSdkVersion 21
     buildToolsVersion "22.0.1"
 
     defaultConfig {
         applicationId "net.laurakogler.medminder"
         minSdkVersion 21
-        targetSdkVersion 22
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -30,6 +30,8 @@ dependencies {
     compile 'com.android.support:design:22.2.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile 'org.jetbrains.spek:spek:0.1.181'
+    testCompile "org.robolectric:robolectric:3.0"
+    testCompile "org.assertj:assertj-core:1.7.0"
 }
 buildscript {
     ext.kotlin_version = '1.0.0-beta-1103'
