@@ -23,7 +23,6 @@ class MainActivity : AppCompatActivity() {
 
     private val injector = KodeinInjector()
     val calendarWrapper: CalendarWrapper by injector.instance()
-    private var lastDoseTime: Long = 0
     lateinit private var handler: Handler
     lateinit private var updateUiRunnable: Runnable
 
@@ -34,21 +33,19 @@ class MainActivity : AppCompatActivity() {
         val toolbar = find<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
+        val doseRepository = SharedPreferencesDoseRepository(PreferenceManager.getDefaultSharedPreferences(this))
+
         handler = Handler()
         updateUiRunnable = Runnable {
-            showLastDoseTime()
+            showLastDoseTime(doseRepository.getDose())
             handler.postDelayed(updateUiRunnable, 1000)
         }
-
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        lastDoseTime = sharedPreferences.getLong(MainActivity.LAST_DOSE_TIME, 0)
 
         val reportDoseButton = find<Button>(R.id.report_dose_button)
         reportDoseButton.setOnClickListener({
             val now = calendarWrapper.getCalendar().time
-            lastDoseTime = now.time
-            sharedPreferences.edit().putLong(LAST_DOSE_TIME, lastDoseTime).commit()
-            showLastDoseTime()
+            doseRepository.setDose(now.time)
+            showLastDoseTime(now.time)
         })
 
         updateUiRunnable.run()
@@ -74,7 +71,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showLastDoseTime() {
+    private fun showLastDoseTime(lastDoseTime: Long) {
         if (lastDoseTime > 0) {
             val date = Date(lastDoseTime)
             val now = calendarWrapper.getCalendar().time
