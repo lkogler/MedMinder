@@ -2,18 +2,17 @@ package net.laurakogler.medminder
 
 import android.widget.Button
 import android.widget.TextView
+import com.github.salomonbrys.kodein.instance
 import com.pawegio.kandroid.find
-
+import org.assertj.core.api.Assertions.assertThat
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricGradleTestRunner
 import org.robolectric.annotation.Config
-
-import org.assertj.core.api.Assertions.assertThat
-import org.junit.Before
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.`when`
 import java.util.*
 
 @RunWith(RobolectricGradleTestRunner::class)
@@ -27,8 +26,13 @@ class MainActivityTest : InjectableTest() {
     fun setUp() {
         mockCalendar = mock(Calendar::class.java)
         `when`(mockCalendar.timeInMillis).thenReturn(initialTime)
-        var calendarWrapper: CalendarWrapper = kodein!!.instance()
+        var calendarWrapper = mock(CalendarWrapper::class.java)
         `when`(calendarWrapper.getCalendar()).thenReturn(mockCalendar)
+
+        overrideBindings {
+            bind<CalendarWrapper>() with instance(calendarWrapper)
+        }
+
         activity = Robolectric.setupActivity(MainActivity::class.java)
     }
 

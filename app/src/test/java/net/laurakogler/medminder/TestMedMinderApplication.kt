@@ -1,22 +1,16 @@
 package net.laurakogler.medminder
 
-import android.app.Application
-import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.KodeinApplication
-import org.mockito.Mockito
+import com.github.salomonbrys.kodein.Kodein
 import org.robolectric.TestLifecycleApplication
 import java.lang.reflect.Method
 
-public class TestMedMinderApplication : Application(), KodeinApplication, TestLifecycleApplication {
+class TestMedMinderApplication : MedMinderApplication(), TestLifecycleApplication {
 
-    override val kodein = Kodein {
-        bind<CalendarWrapper>() with singleton { Mockito.mock(CalendarWrapper::class.java) }
+    fun setKodein(kodein: Kodein) {
+        _kodein = kodein
     }
 
     override fun prepareTest(test: Any?) {
-        if(test is InjectableTest) {
-            test.inject(kodein)
-        }
     }
 
     override fun afterTest(method: Method?) {

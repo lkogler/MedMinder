@@ -2,7 +2,6 @@ package net.laurakogler.medminder
 
 import android.os.Bundle
 import android.os.Handler
-import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.Menu
@@ -23,6 +22,7 @@ class MainActivity : AppCompatActivity() {
 
     private val injector = KodeinInjector()
     val calendarWrapper: CalendarWrapper by injector.instance()
+    val doseRepository: DoseRepository by injector.instance()
     lateinit private var handler: Handler
     lateinit private var updateUiRunnable: Runnable
 
@@ -32,8 +32,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         val toolbar = find<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-
-        val doseRepository = SharedPreferencesDoseRepository(PreferenceManager.getDefaultSharedPreferences(this))
 
         handler = Handler()
         updateUiRunnable = Runnable {
