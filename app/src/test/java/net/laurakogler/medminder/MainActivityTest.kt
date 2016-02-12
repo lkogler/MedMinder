@@ -2,6 +2,7 @@ package net.laurakogler.medminder
 
 import android.widget.Button
 import android.widget.TextView
+import com.pawegio.kandroid.find
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,37 +34,37 @@ class MainActivityTest : InjectableTest() {
 
     @Test
     fun itShouldHaveAButtonToReportDose() {
-        val reportDoseButton = activity.findViewById(R.id.report_dose_button) as Button
+        val reportDoseButton = activity.find<Button>(R.id.report_dose_button)
         assertThat(reportDoseButton.text).isEqualTo("Report Dose")
     }
 
     @Test
     fun theStatusTextShouldBeUpdated_whenTheButtonIsPressed() {
-        val statusText = activity.findViewById(R.id.status_text) as TextView
+        val statusText = activity.find<TextView>(R.id.status_text)
         assertThat(statusText.text).isEqualTo("No previously recorded dose.")
 
-        val reportDoseButton = activity.findViewById(R.id.report_dose_button) as Button
+        val reportDoseButton = activity.find<Button>(R.id.report_dose_button)
         reportDoseButton.performClick()
         assertThat(statusText.text).isEqualTo("Your last dose was at 3:53 PM.")
     }
 
     @Test
     fun restarting_remembersTheLastDoseDate() {
-        val reportDoseButton = activity.findViewById(R.id.report_dose_button) as Button
+        val reportDoseButton = activity.find<Button>(R.id.report_dose_button)
         reportDoseButton.performClick()
-        val statusTextOld = activity.findViewById(R.id.status_text) as TextView
+        val statusTextOld = activity.find<TextView>(R.id.status_text)
 
         val restartedActivity = Robolectric.setupActivity(MainActivity::class.java)
-        val statusTextNew = restartedActivity?.findViewById(R.id.status_text) as TextView
+        val statusTextNew = restartedActivity.find<TextView>(R.id.status_text)
         assertThat(statusTextOld.text).isEqualTo(statusTextNew.text)
     }
 
     @Test
     fun itShowsTimeSinceLastDose() {
-        val reportDoseButton = activity.findViewById(R.id.report_dose_button) as Button
+        val reportDoseButton = activity.find<Button>(R.id.report_dose_button)
         reportDoseButton.performClick()
 
-        val statusText = activity.findViewById(R.id.elapsed_time) as TextView
+        val statusText = activity.find<TextView>(R.id.elapsed_time)
 
         val timeElapsed = 63 * 60 * 1000L
 

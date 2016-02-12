@@ -16,7 +16,7 @@ class MainActivityTest : ActivityInstrumentationTestCase2<MainActivity>(MainActi
     }
 
     fun test_itDisplaysHelloWorld() {
-        val textView = mainActivity!!.findViewById(R.id.main_text) as TextView
+        val textView = mainActivity!!.find<TextView>(R.id.main_text)
         val actual = textView.text.toString()
         Assert.assertEquals("Hello World!", actual)
     }

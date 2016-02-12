@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
+import com.pawegio.kandroid.find
 import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         injector.inject(appKodein())
         setContentView(R.layout.activity_main)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
+        val toolbar = find<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
         handler = Handler()
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         lastDoseTime = sharedPreferences.getLong(MainActivity.LAST_DOSE_TIME, 0)
 
-        val reportDoseButton = findViewById(R.id.report_dose_button) as Button
+        val reportDoseButton = find<Button>(R.id.report_dose_button)
         reportDoseButton.setOnClickListener({
             val now = calendarWrapper.getCalendar().time
             lastDoseTime = now.time
@@ -77,8 +78,8 @@ class MainActivity : AppCompatActivity() {
         if (lastDoseTime > 0) {
             val date = Date(lastDoseTime)
             val now = calendarWrapper.getCalendar().time
-            val statusText = findViewById(R.id.status_text) as TextView
-            val elapsedTimeText = findViewById(R.id.elapsed_time) as TextView
+            val statusText = find<TextView>(R.id.status_text)
+            val elapsedTimeText = find<TextView>(R.id.elapsed_time)
             val dateFormat = SimpleDateFormat("h:mm a");
             statusText.text = "Your last dose was at ${dateFormat.format(date)}."
             val p = PrettyTime(now)
