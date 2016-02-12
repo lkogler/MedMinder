@@ -45,5 +45,14 @@ class MainActivityTest : InjectableTest() {
         assertThat(statusText.text).isEqualTo("Your last dose was at 3:53 PM")
     }
 
+    @Test
+    fun restarting_remembersTheLastDoseDate() {
+        val reportDoseButton = activity?.findViewById(R.id.report_dose_button) as Button
+        reportDoseButton.performClick()
+        val statusTextOld = activity?.findViewById(R.id.status_text) as TextView
 
+        val restartedActivity = Robolectric.setupActivity(MainActivity::class.java)
+        val statusTextNew = restartedActivity?.findViewById(R.id.status_text) as TextView
+        assertThat(statusTextOld.text).isEqualTo(statusTextNew.text)
+    }
 }
