@@ -22,6 +22,13 @@
         android:padding="24dp"
         />
 
+    <TextView
+        android:id="@+id/elapsed_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="That was 3 hours 5 minutes ago"
+        android:paddingBottom="24dp"/>
+
     <Button
         android:id="@+id/report_dose_button"
         android:layout_height="wrap_content"

@@ -1,6 +1,7 @@
 package net.laurakogler.medminder
 
 import android.os.Bundle
+import android.os.Handler
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.TextView
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.android.appKodein
+import org.ocpsoft.prettytime.PrettyTime
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,6 +22,9 @@ class MainActivity : AppCompatActivity() {
 
     private val injector = KodeinInjector()
     val calendarWrapper: CalendarWrapper by injector.instance()
+    private var lastDoseTime: Long = 0
+    lateinit private var handler: Handler
+    lateinit private var updateUiRunnable: Runnable
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,18 +33,24 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById(R.id.toolbar) as Toolbar
         setSupportActionBar(toolbar)
 
-        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val lastDoseTime = sharedPreferences.getLong(MainActivity.LAST_DOSE_TIME, 0)
-        if (lastDoseTime > 0) {
-            showLastDoseTime(Date(lastDoseTime))
+        handler = Handler()
+        updateUiRunnable = Runnable {
+            showLastDoseTime()
+            handler.postDelayed(updateUiRunnable, 1000)
         }
+
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        lastDoseTime = sharedPreferences.getLong(MainActivity.LAST_DOSE_TIME, 0)
 
         val reportDoseButton = findViewById(R.id.report_dose_button) as Button
         reportDoseButton.setOnClickListener({
             val now = calendarWrapper.getCalendar().time
-            sharedPreferences.edit().putLong(LAST_DOSE_TIME, now.time).commit()
-            showLastDoseTime(now)
+            lastDoseTime = now.time
+            sharedPreferences.edit().putLong(LAST_DOSE_TIME, lastDoseTime).commit()
+            showLastDoseTime()
         })
+
+        updateUiRunnable.run()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -62,9 +73,16 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun showLastDoseTime(date: Date?) {
-        val statusText = findViewById(R.id.status_text) as TextView
-        val dateFormat = SimpleDateFormat("h:mm a");
-        statusText.text = "Your last dose was at ${dateFormat.format(date)}"
+    private fun showLastDoseTime() {
+        if (lastDoseTime > 0) {
+            val date = Date(lastDoseTime)
+            val now = calendarWrapper.getCalendar().time
+            val statusText = findViewById(R.id.status_text) as TextView
+            val elapsedTimeText = findViewById(R.id.elapsed_time) as TextView
+            val dateFormat = SimpleDateFormat("h:mm a");
+            statusText.text = "Your last dose was at ${dateFormat.format(date)}."
+            val p = PrettyTime(now)
+            elapsedTimeText.text = "That was ${p.format(date)}."
+        }
     }
 }
