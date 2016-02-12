@@ -82,7 +82,9 @@ class MainActivity : AppCompatActivity() {
             val dateFormat = SimpleDateFormat("h:mm a");
             statusText.text = "Your last dose was at ${dateFormat.format(date)}."
             val p = PrettyTime(now)
-            elapsedTimeText.text = "That was ${p.format(date)}."
+            val durations = p.calculatePreciseDuration(date)
+            val timeString = p.format(durations)
+            elapsedTimeText.text = "That was $timeString."
         }
     }
 }

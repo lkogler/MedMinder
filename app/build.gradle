@@ -33,7 +33,7 @@ dependencies {
     testCompile 'org.assertj:assertj-core:1.7.0'
     compile 'com.github.salomonbrys.kodein:kodein:2.5.0'
     compile 'com.github.salomonbrys.kodein:kodein-android:2.5.0'
-    compile 'org.ocpsoft.prettytime:prettytime:3.2.7.Final'
+    compile 'org.ocpsoft.prettytime:prettytime:4.0.0.Final'
     testCompile 'org.mockito:mockito-core:1.10.19'
 }
 buildscript {

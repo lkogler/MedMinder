@@ -59,7 +59,7 @@ class MainActivityTest : InjectableTest() {
     }
 
     @Test
-    fun itShowsTimeSinceLastDose_inHours() {
+    fun itShowsTimeSinceLastDose() {
         val reportDoseButton = activity.findViewById(R.id.report_dose_button) as Button
         reportDoseButton.performClick()
 
@@ -69,10 +69,10 @@ class MainActivityTest : InjectableTest() {
 
         `when`(mockCalendar.timeInMillis).thenReturn(initialTime + timeElapsed)
         Robolectric.getForegroundThreadScheduler().advanceBy(timeElapsed)
-        assertThat(statusText.text).isEqualTo("That was 1 hour ago.")
+        assertThat(statusText.text).isEqualTo("That was 1 hour 3 minutes ago.")
 
         `when`(mockCalendar.timeInMillis).thenReturn(initialTime + 2*timeElapsed)
         Robolectric.getForegroundThreadScheduler().advanceBy(timeElapsed)
-        assertThat(statusText.text).isEqualTo("That was 2 hours ago.")
+        assertThat(statusText.text).isEqualTo("That was 2 hours 6 minutes ago.")
     }
 }
