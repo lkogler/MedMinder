@@ -2,14 +2,11 @@ package net.laurakogler.medminder
 
 import android.widget.Button
 import android.widget.TextView
-import com.github.salomonbrys.kodein.instance
 import com.pawegio.kandroid.find
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricGradleTestRunner
 import org.robolectric.annotation.Config
@@ -19,18 +16,13 @@ import java.util.*
 @Config(constants = BuildConfig::class)
 class MainActivityTest : InjectableTest() {
     lateinit var activity: MainActivity
-    lateinit var mockCalendar: Calendar
-    val initialTime = 1447458813490L
+    val initialTime = 1447458813490L // 11/13/2015 @ 11:53:33.490pm (UTC)
+    val fakeCalendar = FakeCalendar(initialTime)
 
     @Before
     fun setUp() {
-        mockCalendar = mock(Calendar::class.java)
-        `when`(mockCalendar.timeInMillis).thenReturn(initialTime)
-        var calendarWrapper = mock(CalendarWrapper::class.java)
-        `when`(calendarWrapper.getCalendar()).thenReturn(mockCalendar)
-
         overrideBindings {
-            bind<CalendarWrapper>() with instance(calendarWrapper)
+            bind<Calendar>() with fakeCalendar
         }
 
         activity = Robolectric.setupActivity(MainActivity::class.java)
@@ -70,14 +62,14 @@ class MainActivityTest : InjectableTest() {
 
         val statusText = activity.find<TextView>(R.id.elapsed_time)
 
-        val timeElapsed = 63 * 60 * 1000L
+        val oneHourThreeMinutes = 63 * 60 * 1000L
 
-        `when`(mockCalendar.timeInMillis).thenReturn(initialTime + timeElapsed)
-        Robolectric.getForegroundThreadScheduler().advanceBy(timeElapsed)
+        fakeCalendar.advanceTime(oneHourThreeMinutes)
+        Robolectric.getForegroundThreadScheduler().advanceToNextPostedRunnable()
         assertThat(statusText.text).isEqualTo("That was 1 hour 3 minutes ago.")
 
-        `when`(mockCalendar.timeInMillis).thenReturn(initialTime + 2*timeElapsed)
-        Robolectric.getForegroundThreadScheduler().advanceBy(timeElapsed)
+        fakeCalendar.advanceTime(oneHourThreeMinutes)
+        Robolectric.getForegroundThreadScheduler().advanceToNextPostedRunnable()
         assertThat(statusText.text).isEqualTo("That was 2 hours 6 minutes ago.")
     }
 }

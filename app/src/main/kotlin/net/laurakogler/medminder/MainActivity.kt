@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private val injector = KodeinInjector()
-    val calendarWrapper: CalendarWrapper by injector.instance()
+    val calendar: () -> Calendar by injector.provider()
     val doseRepository: DoseRepository by injector.instance()
     lateinit private var handler: Handler
     lateinit private var updateUiRunnable: Runnable
@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         val reportDoseButton = find<Button>(R.id.report_dose_button)
         reportDoseButton.setOnClickListener({
-            val now = calendarWrapper.getCalendar().time
+            val now = calendar().time
             doseRepository.setDose(now.time)
             showLastDoseTime(now.time)
         })
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
     private fun showLastDoseTime(lastDoseTime: Long) {
         if (lastDoseTime > 0) {
             val date = Date(lastDoseTime)
-            val now = calendarWrapper.getCalendar().time
+            val now = calendar().time
             val statusText = find<TextView>(R.id.status_text)
             val elapsedTimeText = find<TextView>(R.id.elapsed_time)
             val dateFormat = SimpleDateFormat("h:mm a");
